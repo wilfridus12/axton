@@ -1,0 +1,69 @@
+import os
+import stat
+import pwd
+import datetime
+
+#r 4 w 2 x 1
+def main()
+	try
+		#open filelist.txt,create output variable, store lines in variable lines
+		f = open(filelist.txt, r)
+		lines = f.readlines()
+		f.close()
+
+		#check if there are no filenames inside filelist.txt
+		if len(lines) == 0
+			#create output.txt without any content
+			fin = open(output.txt,w)
+			fin.close()
+		else
+			fin = open(output.txt,w)
+			#loop over the list of filenames
+			for line in lines
+				output = 
+				filename = line.strip()
+				path = os.getcwd()
+				fullpath = os.path.join(path, filename)
+
+				#check if the path exists
+				if os.path.exists(fullpath)
+					st = os.stat(fullpath)
+					#check read and execute for group
+					read_acc = stat.filemode(st.st_mode)[4] == r
+					exe_acc = stat.filemode(st.st_mode)[6] == x
+
+					# if group exe is false change to true
+					if not exe_acc
+						os.chmod(fullpath, 0o770)
+
+					# if group exe is true change to false
+					else
+						os.chmod(fullpath, 0o760)
+
+					# append filename read exe and find size, owner, group, last modified date, last accessed date
+					output += filename + 
+					output += Group Readable  + str(read_acc) + , 
+					output += Group Executable  + str(exe_acc) +  
+					filesize = st.st_size
+					owner = pwd.getpwuid(st.st_uid).pw_name
+					group = pwd.getpwuid(st.st_gid).pw_name
+					last_modif = datetime.datetime.fromtimestamp(st.st_mtime).strftime(%b %d  %Y)
+					last_acc = datetime.datetime.fromtimestamp(st.st_atime).strftime(%b %d  %Y)
+					
+					#if size greater than 0 append them into the output
+					output += Size  + str(filesize) + , Owner  + owner + , Group  + group + , last modified date +last_modif+, last access date +last_acc+n
+					
+					#write output into output.txt 
+					fin.write(output)
+				else
+					fin.write(filename +  can not be foundn)
+
+			fin.close()
+		#catch exception file not found for if filelist.txt is not found
+	except FileNotFoundError as e
+		fin = open(output.txt, w)
+		fin.write(filelist.txt can not be foundn)
+		fin.close()
+
+if _name_ == '_main_'
+	main()
